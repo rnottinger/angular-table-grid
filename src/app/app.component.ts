@@ -4,7 +4,7 @@ import {TableGridOptions} from '../../projects/angular-table-grid/src/lib/interf
 import {TableGridRowDataResponse} from '../../projects/angular-table-grid/src/lib/interfaces/table-grid-row-data-response';
 import {TableGridRowDataRequest} from '../../projects/angular-table-grid/src/lib/interfaces/table-grid-row-data-request';
 import {map} from 'rxjs/internal/operators';
-import {TableGridComponent} from 'angular-table-grid';
+import {TableGridComponent} from 'angular-table-grid/lib/components/table-grid/table-grid.component';
 import {TableGridFilters} from '../../projects/angular-table-grid/src/public_api';
 import {TableGridCustomCellExampleComponent} from '../../projects/angular-table-grid/src/lib/components/table-grid-custom-cell-example/table-grid-custom-cell-example.component';
 
