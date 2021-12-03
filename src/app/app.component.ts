@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {TableGridOptions} from '../../projects/angular-table-grid/src/lib/interfaces/table-grid-options';
 import {TableGridRowDataResponse} from '../../projects/angular-table-grid/src/lib/interfaces/table-grid-row-data-response';
@@ -13,79 +13,85 @@ import {TableGridCustomCellExampleComponent} from '../../projects/angular-table-
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-    gridOptions: TableGridOptions;
-    gridApi;
-    query: string;
+export class AppComponent implements OnInit {
+  public gridOptions: TableGridOptions;
+  public gridApi;
+  query: string;
 
-    constructor(http: HttpClient) {
-        this.gridOptions = {
-            enableDetails: true,
-            getDetails: (node: any) => {
-                return (typeof node.body !== 'undefined') ? node.body : false;
-            },
-            columns: [
-                {
-                    headerTitle: 'ID',
-                    fieldName: 'id',
-                    sortable: true
-                },
-                {
-                    headerTitle: 'User ID',
-                    fieldName: 'userId',
-                    component: TableGridCustomCellExampleComponent
-                },
-                {
-                    headerTitle: 'Title',
-                    fieldName: 'title'
-                },
-                {
-                    headerTitle: 'Dynamic',
-                    fieldFn: (gridRow: any) => {
-                        return 'Dynamic ' + gridRow.id;
-                    }
-                }
-            ],
-            getRowData: (rowDataRequest: TableGridRowDataRequest) => {
-                return http.get<any>('https://jsonplaceholder.typicode.com/posts', {
-                    params: rowDataRequest.params
-                }).pipe(
-                    map((response) => {
-                        return <TableGridRowDataResponse>{
-                            rows: response,
-                            totalRows: 100
-                        };
-                    })
-                );
-            },
-            getCellStyles: (value, columnDef) => {
-                if (columnDef.fieldName === 'id') {
-                    const color = (value % 2 === 0) ? 'blue' : 'green';
-                    return {'border-left': '5px solid ' + color};
-                } else {
-                    return {};
-                }
-            },
-            perPage: 5
-        };
-    }
+  constructor(private http: HttpClient) { }
 
-    gridReady(gridApi: TableGridComponent) {
-        this.gridApi = gridApi;
-    }
+  ngOnInit() {
+    this.gridOptions = this.loadGrid();
+  }
 
-    refresh() {
-        this.gridApi.refresh();
-    }
+  loadGrid(): TableGridOptions {
+    return {
+      enableDetails: true,
+      getDetails: (node: any) => {
+        return (typeof node.body !== 'undefined') ? node.body : false;
+      },
+      columns: [
+        {
+          headerTitle: 'ID',
+          fieldName: 'id',
+          sortable: true
+        },
+        {
+          headerTitle: 'User ID',
+          fieldName: 'userId',
+          component: TableGridCustomCellExampleComponent
+        },
+        {
+          headerTitle: 'Title',
+          fieldName: 'title'
+        },
+        {
+          headerTitle: 'Dynamic',
+          fieldFn: (gridRow: any) => {
+            return 'Dynamic ' + gridRow.id;
+          }
+        }
+      ],
+      getRowData: (rowDataRequest: TableGridRowDataRequest) => {
+        return this.http.get<any>('https://jsonplaceholder.typicode.com/posts', {
+          params: rowDataRequest.params
+        }).pipe(
+          map((response) => {
+            return <TableGridRowDataResponse>{
+              rows: response,
+              totalRows: 100
+            };
+          })
+        );
+      },
+      getCellStyles: (value, columnDef) => {
+        if (columnDef.fieldName === 'id') {
+          const color = (value % 2 === 0) ? 'blue' : 'green';
+          return {'border-left': '5px solid ' + color};
+        } else {
+          return {};
+        }
+      },
+      perPage: 5
+    };
+  }
 
-    getSelectedRows() {
-        console.log(this.gridApi.getSelectedRows());
-    }
+  gridReady(gridApi: TableGridComponent) {
+      this.gridApi = gridApi;
+  }
 
-    search() {
-        this.gridApi.rowDataRequest.filters[0] = <TableGridFilters> {
-            q: this.query
-        };
-        this.gridApi.refresh();
-    }
+  refresh() {
+      this.gridApi.refresh();
+  }
+
+  getSelectedRows() {
+      console.log(this.gridApi.getSelectedRows());
+  }
+
+  search() {
+      this.gridApi.rowDataRequest.filters[0] = <TableGridFilters> {
+          q: this.query
+      };
+      this.gridApi.refresh();
+  }
 }
