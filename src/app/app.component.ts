@@ -15,7 +15,7 @@ import {TableGridCustomCellExampleComponent} from '../../projects/angular-table-
 })
 export class AppComponent {
     gridOptions: TableGridOptions;
-    gridApi: TableGridComponent;
+    gridApi;
     query: string;
 
     constructor(http: HttpClient) {
